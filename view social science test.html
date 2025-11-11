@@ -1,0 +1,201 @@
+v<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title> Social Science Test | Test Pro Academy</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+  }
+  header {
+    background: #1c3b57;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .container {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
+  .summary {
+    width: 300px;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    margin: 20px;
+    flex-shrink: 0;
+  }
+  .summary h3 {margin-top:0;color:#1c3b57;font-size:1.2rem;}
+  .summary p {margin: 8px 0;font-size:1rem;}
+  .question-buttons {display: flex;flex-wrap: wrap;gap:5px;margin-top:10px;max-height:400px;overflow-y:auto;}
+  .question-buttons button {width: 40px;height: 40px;border-radius: 50%;border:none;cursor:pointer;background:#ccc;}
+  .question-buttons button.active, .question-buttons button.answered {background:#1c3b57;color:white;}
+  .question-box {
+    flex: 1;
+    background: #fff;
+    margin: 40px 20px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .question-number {font-weight:bold;font-size:1.2rem;}
+  .question-text {margin: 25px 0;font-size:1.1rem;line-height:1.6;}
+  .options button {
+    display:block;width:100%;text-align:left;margin:10px 0;padding:14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;transition:0.15s;font-size:1rem;
+  }
+  .options button:hover {background:#e0e0e0;}
+  .options button.selected {
+    background:#1c3b57;
+    color:#fff;
+    border-color:#1c3b57;
+  }
+  .nav-buttons {display:flex;justify-content:space-between;margin-top:30px;}
+  .nav-buttons button, .submit-btn {padding:12px 30px;border:none;background:#1c3b57;color:white;border-radius:6px;cursor:pointer;}
+  .nav-buttons button:hover, .submit-btn:hover {background:#16324a;}
+  .submit-btn {margin-top:20px;width:100%;}
+  @media(max-width:900px){
+    .container {flex-direction: column;}
+    .summary {width:90%;margin:10px auto;}
+    .question-box {margin:10px auto;width:90%;}
+  }
+</style>
+</head>
+<body>
+
+<header> Social Science Test - 20 Questions </header>
+
+<div class="container">
+  <div class="summary">
+    <h3>Test Summary</h3>
+    <p>Total Questions: <span id="total-questions">20</span></p>
+    <p>Completed: <span id="completed-questions">0</span></p>
+    <p>Pending: <span id="pending-questions">20</span></p>
+    <div class="question-buttons" id="question-buttons"></div>
+    <button class="submit-btn" onclick="submitTest()">Submit Test</button>
+  </div>
+
+  <div class="question-box">
+    <div>
+      <div class="question-number" id="question-number">Question 1 of 20</div>
+      <div class="question-text" id="question-text">Loading question...</div>
+      <div class="options">
+        <button onclick="selectOption(0)" id="option0">Option A</button>
+        <button onclick="selectOption(1)" id="option1">Option B</button>
+        <button onclick="selectOption(2)" id="option2">Option C</button>
+        <button onclick="selectOption(3)" id="option3">Option D</button>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { q: "1. முதல் உலகப் போர் தொடங்கிய ஆண்டு எது?", options: ["1919", "1914", "1939", "1945"], answer: 1 },
+  { q: "2. ரஷ்யப் புரட்சியின் தலைவர் யார்?", options: ["ஸ்டாலின்", "லெனின்", "ஹிட்லர்", "மார்க்ஸ்"], answer: 1 },
+  { q: "3. காந்திஜியின் முதல் சத்தியாகிரகம் எங்கு நடைபெற்றது?", options: ["அஹம்மதாபாத்", "சம்பரன்", "டாண்டி", "சாபர்மதி"], answer: 1 },
+  { q: "4. இந்திய தேசிய காங்கிரஸ் நிறுவப்பட்ட ஆண்டு எது?", options: ["1885", "1858", "1905", "1947"], answer: 0 },
+  { q: "5. இந்தியாவின் முதல் ஆளுநர் ஜெனரல் யார்?", options: ["லார்டு கார்ன்வாலிஸ்", "வாரன் ஹேஸ்டிங்ஸ்", "லார்டு வெல்லஸ்லி", "மவுண்ட்பேட்டன்"], answer: 1 },
+  { q: "6. இந்தியாவின் மிக நீளமான நதி எது?", options: ["கங்கை", "யமுனை", "கோதாவரி", "நர்மதா"], answer: 0 },
+  { q: "7. புவியின் சுழற்சி நேரம் எவ்வளவு?", options: ["12 மணி", "24 மணி", "48 மணி", "36 மணி"], answer: 1 },
+  { q: "8. இந்தியாவில் அதிக மழை பெறும் மாநிலம் எது?", options: ["அசாம்", "மேகாலயா", "தமிழ்நாடு", "கேரளா"], answer: 1 },
+  { q: "9. இந்திய அரசமைப்பு அமல்படுத்தப்பட்ட நாள் எது?", options: ["ஆகஸ்ட் 15, 1947", "ஜனவரி 26, 1950", "ஜனவரி 30, 1948", "அக்டோபர் 2, 1952"], answer: 1 },
+  { q: "10. இந்திய ஜனாதிபதி யாரால் தேர்ந்தெடுக்கப்படுகிறார்?", options: ["மக்கள்", "தேர்தல் கல்லூரி", "பாராளுமன்றம்", "முதல்வர்கள்"], answer: 1 },
+  { q: "11. மக்களவையில் உறுப்பினர்கள் எத்தனை பேர் உள்ளனர்?", options: ["250", "545", "552", "500"], answer: 2 },
+  { q: "12. பொருளாதாரத்தின் அடிப்படை பிரச்சனை எது?", options: ["வளங்கள் பற்றாக்குறை", "வளங்கள் மிகை", "மக்கள் மிகை", "பணவீக்கம்"], answer: 0 },
+  { q: "13. இந்தியாவின் நாணயம் எது?", options: ["டாலர்", "யென்", "ரூபாய்", "பவுண்ட்"], answer: 2 },
+  { q: "14. மொத்த உள்நாட்டு உற்பத்தி (GDP) என்ன அளவிடுகிறது?", options: ["வெளிநாட்டு வர்த்தகம்", "உள்நாட்டு உற்பத்தி மதிப்பு", "மக்கள் தொகை", "விலை நிலை"], answer: 1 },
+  { q: "15. இந்தியாவின் ஐந்து ஆண்டு திட்டங்கள் எப்போது தொடங்கின?", options: ["1950", "1951", "1962", "1971"], answer: 1 },
+  { q: "16. “பசுமைப் புரட்சி”யுடன் தொடர்புடையவர் யார்?", options: ["வெர்கீஸ் குரியன்", "எம்.எஸ். ஸ்வாமிநாதன்", "ராம்மோகன் ராய்", "நேரு"], answer: 1 },
+  { q: "17. இந்தியாவின் தலைநகர் எது?", options: ["மும்பை", "சென்னை", "புதுதில்லி", "கொல்கத்தா"], answer: 2 },
+  { q: "18. ஹிமாலயா மலைத்தொடர் எந்த திசையில் அமைந்துள்ளது?", options: ["வடக்கு", "தெற்கு", "கிழக்கு", "மேற்கு"], answer: 0 },
+  { q: "19. அரசமைப்பின் முன்னுரையின் முதல் வார்த்தை என்ன?", options: ["நாங்கள் இந்திய மக்கள்", "இந்தியா ஒரு குடியரசு", "மக்கள் ஆட்சி", "நீதி சமத்துவம்"], answer: 0 },
+  { q: "20. இந்தியாவின் முதல் பிரதமர் யார்?", options: ["ஜவஹர்லால் நேரு", "லால் பகதூர் சாஸ்திரி", "இந்திரா காந்தி", "ராஜீவ் காந்தி"], answer: 0 }
+];
+
+let currentQuestion = 0;
+let userAnswers = new Array(questions.length).fill(null);
+
+function loadQuestion(index) {
+  const q = questions[index];
+  document.getElementById("question-number").innerText = `Question ${index + 1} of ${questions.length}`;
+  document.getElementById("question-text").innerText = q.q;
+  q.options.forEach((opt, i) => {
+    const btn = document.getElementById(`option${i}`);
+    btn.innerText = opt;
+    btn.classList.toggle("selected", userAnswers[index] === i);
+  });
+  updateSummary();
+  updateQuickButtons();
+}
+
+function selectOption(i) {
+  userAnswers[currentQuestion] = i;
+  loadQuestion(currentQuestion);
+}
+
+function nextQuestion() {
+  if (currentQuestion < questions.length - 1) currentQuestion++;
+  loadQuestion(currentQuestion);
+}
+
+function prevQuestion() {
+  if (currentQuestion > 0) currentQuestion--;
+  loadQuestion(currentQuestion);
+}
+
+function updateSummary() {
+  const completed = userAnswers.filter(a => a !== null).length;
+  document.getElementById("completed-questions").innerText = completed;
+  document.getElementById("pending-questions").innerText = questions.length - completed;
+}
+
+function updateQuickButtons() {
+  const container = document.getElementById("question-buttons");
+  container.innerHTML = "";
+  questions.forEach((_, i) => {
+    const btn = document.createElement("button");
+    btn.innerText = i + 1;
+    if (i === currentQuestion) btn.classList.add("active");
+    if (userAnswers[i] !== null) btn.classList.add("answered");
+    btn.onclick = () => { currentQuestion = i; loadQuestion(i); };
+    container.appendChild(btn);
+  });
+}
+
+function submitTest() {
+  const totalQuestions = questions.length;
+  const attemptedQuestions = userAnswers.filter(a => a !== null).length;
+  let totalScore = 0;
+  for (let i = 0; i < totalQuestions; i++) {
+    if (userAnswers[i] === questions[i].answer) totalScore += 2;
+  }
+
+  localStorage.setItem("totalQuestions", totalQuestions);
+  localStorage.setItem("attemptedQuestions", attemptedQuestions);
+  localStorage.setItem("unattemptedQuestions", totalQuestions - attemptedQuestions);
+  localStorage.setItem("totalScore", totalScore);
+
+  // ✅ Added this line
+  localStorage.setItem("socialMark", totalScore);
+
+  // ✅ Changed this line
+  window.location.href = "tamil mark.html";
+}
+
+window.onload = () => loadQuestion(currentQuestion);
+</script>
+</body>
+</html>

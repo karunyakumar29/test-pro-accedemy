@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tamil Test Result | Test Pro Academy</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .marks-box {
+    background: white;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 400px;
+  }
+  .marks-box h1 {
+    color: #1c3b57;
+    margin-bottom: 30px;
+  }
+  .marks-box p {
+    font-size: 1.2rem;
+    margin: 15px 0;
+  }
+  button {
+    margin-top: 25px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    background: #1c3b57;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  button:hover {
+    background: #16324a;
+  }
+</style>
+</head>
+<body>
+  <div class="marks-box">
+    <h1>Test Result</h1>
+    <p>Total Questions: <span id="total-questions">20</span></p>
+    <p>Attempted Questions: <span id="attempted-questions">0</span></p>
+    <p>Unattempted Questions: <span id="unattempted-questions">0</span></p>
+    <p><strong>Total Marks Scored:</strong> <span id="total-score">0</span> / 40</p>
+    <button onclick="goBack()">Next Test</button>
+  </div>
+
+  <script>
+    // Get data from localStorage (sent from main test page)
+    const totalQuestions = localStorage.getItem('totalQuestions') || 20;
+    const attemptedQuestions = localStorage.getItem('attemptedQuestions') || 0;
+    const unattemptedQuestions = localStorage.getItem('unattemptedQuestions') || (totalQuestions - attemptedQuestions);
+    const totalScore = localStorage.getItem('totalScore') || 0;
+
+    // Update UI
+    document.getElementById('total-questions').innerText = totalQuestions;
+    document.getElementById('attempted-questions').innerText = attemptedQuestions;
+    document.getElementById('unattempted-questions').innerText = unattemptedQuestions;
+    document.getElementById('total-score').innerText = totalScore;
+
+    function goBack() {
+      window.location.href = 'assessment.html'; // go back to dashboard
+    }
+  </script>
+</body>
+</html>

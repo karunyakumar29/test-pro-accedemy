@@ -1,0 +1,201 @@
+v<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Science Test | Test Pro Academy</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+  }
+  header {
+    background: #1c3b57;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .container {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
+  .summary {
+    width: 300px;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    margin: 20px;
+    flex-shrink: 0;
+  }
+  .summary h3 {margin-top:0;color:#1c3b57;font-size:1.2rem;}
+  .summary p {margin: 8px 0;font-size:1rem;}
+  .question-buttons {display: flex;flex-wrap: wrap;gap:5px;margin-top:10px;max-height:400px;overflow-y:auto;}
+  .question-buttons button {width: 40px;height: 40px;border-radius: 50%;border:none;cursor:pointer;background:#ccc;}
+  .question-buttons button.active, .question-buttons button.answered {background:#1c3b57;color:white;}
+  .question-box {
+    flex: 1;
+    background: #fff;
+    margin: 40px 20px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .question-number {font-weight:bold;font-size:1.2rem;}
+  .question-text {margin: 25px 0;font-size:1.1rem;line-height:1.6;}
+  .options button {
+    display:block;width:100%;text-align:left;margin:10px 0;padding:14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;transition:0.15s;font-size:1rem;
+  }
+  .options button:hover {background:#e0e0e0;}
+  .options button.selected {
+    background:#1c3b57;
+    color:#fff;
+    border-color:#1c3b57;
+  }
+  .nav-buttons {display:flex;justify-content:space-between;margin-top:30px;}
+  .nav-buttons button, .submit-btn {padding:12px 30px;border:none;background:#1c3b57;color:white;border-radius:6px;cursor:pointer;}
+  .nav-buttons button:hover, .submit-btn:hover {background:#16324a;}
+  .submit-btn {margin-top:20px;width:100%;}
+  @media(max-width:900px){
+    .container {flex-direction: column;}
+    .summary {width:90%;margin:10px auto;}
+    .question-box {margin:10px auto;width:90%;}
+  }
+</style>
+</head>
+<body>
+
+<header>Science Test - 20 Questions</header>
+
+<div class="container">
+  <div class="summary">
+    <h3>Test Summary</h3>
+    <p>Total Questions: <span id="total-questions">20</span></p>
+    <p>Completed: <span id="completed-questions">0</span></p>
+    <p>Pending: <span id="pending-questions">20</span></p>
+    <div class="question-buttons" id="question-buttons"></div>
+    <button class="submit-btn" onclick="submitTest()">Submit Test</button>
+  </div>
+
+  <div class="question-box">
+    <div>
+      <div class="question-number" id="question-number">Question 1 of 20</div>
+      <div class="question-text" id="question-text">Loading question...</div>
+      <div class="options">
+        <button onclick="selectOption(0)" id="option0">Option A</button>
+        <button onclick="selectOption(1)" id="option1">Option B</button>
+        <button onclick="selectOption(2)" id="option2">Option C</button>
+        <button onclick="selectOption(3)" id="option3">Option D</button>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { q: "1. மனித உடலில் இரத்தத்தை வடிகட்டும் உறுப்பு எது?", options: ["இதயம்", "சிறுநீரகம்", "கல்லீரல்", "நுரையீரல்"], answer: 1 },
+  { q: "2. தாவரங்கள் ஒளிச்சேர்க்கையின் போது வெளியிடும் வாயு எது?", options: ["ஆக்சிஜன்", "கார்பன் டையாக்சைடு", "நைட்ரஜன்", "ஹைட்ரஜன்"], answer: 0 },
+  { q: "3. மின்னழுத்தத்தின் அலகு எது?", options: ["அம்பியர்", "வோல்ட்", "ஓம்", "வாட்"], answer: 1 },
+  { q: "4. தாவரத்தின் உணவகம் எது?", options: ["வேர்", "தண்டு", "இலை", "பூ"], answer: 2 },
+  { q: "5. நீராவி திரவமாக மாறும் செயல்முறை எது?", options: ["ஆவியாக்கம்", "தண்மூட்டம்", "உருகல்", "உறைதல்"], answer: 1 },
+  { q: "6. ஒளி நேர்கோட்டில் பயணிக்கும் என்பதை நிரூபிக்கும் கருவி எது?", options: ["பிரிஸம்", "பின்ஹோல் கேமரா", "அச்சுப்பொறி", "லென்ஸ்"], answer: 1 },
+  { q: "7. மின்சாரம் செல்லாத பொருளை என்ன என்பார்கள்?", options: ["நடப்பான்", "மின்தடைப் பொருள்", "மின்சுற்று", "மின் விசை"], answer: 1 },
+  { q: "8. எலும்புகள் இணைவது எதன் மூலம்?", options: ["நரம்பு", "தசை", "சீனம்", "இணைப்பு"], answer: 2 },
+  { q: "9. வெப்ப ஆற்றல் எந்த வடிவத்தில் பரிமாறப்படுகிறது?", options: ["அலை", "கதிர்", "துகள்", "ஒலி"], answer: 1 },
+  { q: "10. ஒளி பிரதிபலிக்கும் விதி எதைச் சுட்டுகிறது?", options: ["i = r", "i < r", "i > r", "i + r = 180°"], answer: 0 },
+  { q: "11. பால் அமிலம் உருவாகுவது எந்த செயல்பாட்டில்?", options: ["ஆக்சிஜன் மூல சுவாசம்", "ஆக்சிஜன் அற்ற சுவாசம்", "ஒளிச்சேர்க்கை", "இரத்தசுழற்சி"], answer: 1 },
+  { q: "12. மின்தடை அலகு எது?", options: ["வாட்", "அம்பியர்", "ஓம்", "வோல்ட்"], answer: 2 },
+  { q: "13. ஒளியின் வேகம் அதிகமாக இருப்பது எந்த ஊடகத்தில்?", options: ["காற்று", "நீர்", "கண்ணாடி", "இரும்பு"], answer: 0 },
+  { q: "14. மனித இதயத்தின் வலது பக்கத்தில் செல்லும் இரத்தம் எது?", options: ["ஆக்சிஜன் நிறைந்தது", "கார்பன் டையாக்சைடு நிறைந்தது", "கலந்தது", "இல்லை"], answer: 1 },
+  { q: "15. உயிரினத்தின் மரபணுக்களில் காணப்படும் பொருள் எது?", options: ["டிஎன்ஏ (DNA)", "ஆர்என்ஏ (RNA)", "புரதம்", "கார்போஹைட்ரேட்"], answer: 0 },
+  { q: "16. எது புதிய ஆற்றல் மூலமாகும்?", options: ["நிலக்கரி", "பேட்ரோல்", "சூரிய ஆற்றல்", "டீசல்"], answer: 2 },
+  { q: "17. தாவரத்தின் எந்த பகுதி நீரை உறிஞ்சுகிறது?", options: ["வேர்", "தண்டு", "இலை", "பூ"], answer: 0 },
+  { q: "18. மின்சுற்றில் மின்சாரம் பாய்வதற்கு தேவையான கூறு எது?", options: ["பேட்டரி", "பலகை", "பேனா", "கம்பி"], answer: 0 },
+  { q: "19. சூரியனிலிருந்து பூமிக்கு வரும் ஆற்றல் எது?", options: ["ஒளி ஆற்றல்", "இயந்திர ஆற்றல்", "வேதியியல் ஆற்றல்", "அணு ஆற்றல்"], answer: 0 },
+  { q: "20. கண்ணின் எந்த பகுதி ஒளியை பிரதிபலிக்கிறது?", options: ["கோர்னியா", "லென்ஸ்", "ரெட்டினா", "ஐரிஸ்"], answer: 2 }
+];
+
+let currentQuestion = 0;
+let userAnswers = new Array(questions.length).fill(null);
+
+function loadQuestion(index) {
+  const q = questions[index];
+  document.getElementById("question-number").innerText = `Question ${index + 1} of ${questions.length}`;
+  document.getElementById("question-text").innerText = q.q;
+  q.options.forEach((opt, i) => {
+    const btn = document.getElementById(`option${i}`);
+    btn.innerText = opt;
+    btn.classList.toggle("selected", userAnswers[index] === i);
+  });
+  updateSummary();
+  updateQuickButtons();
+}
+
+function selectOption(i) {
+  userAnswers[currentQuestion] = i;
+  loadQuestion(currentQuestion);
+}
+
+function nextQuestion() {
+  if (currentQuestion < questions.length - 1) currentQuestion++;
+  loadQuestion(currentQuestion);
+}
+
+function prevQuestion() {
+  if (currentQuestion > 0) currentQuestion--;
+  loadQuestion(currentQuestion);
+}
+
+function updateSummary() {
+  const completed = userAnswers.filter(a => a !== null).length;
+  document.getElementById("completed-questions").innerText = completed;
+  document.getElementById("pending-questions").innerText = questions.length - completed;
+}
+
+function updateQuickButtons() {
+  const container = document.getElementById("question-buttons");
+  container.innerHTML = "";
+  questions.forEach((_, i) => {
+    const btn = document.createElement("button");
+    btn.innerText = i + 1;
+    if (i === currentQuestion) btn.classList.add("active");
+    if (userAnswers[i] !== null) btn.classList.add("answered");
+    btn.onclick = () => { currentQuestion = i; loadQuestion(i); };
+    container.appendChild(btn);
+  });
+}
+
+function submitTest() {
+  const totalQuestions = questions.length;
+  const attemptedQuestions = userAnswers.filter(a => a !== null).length;
+  let totalScore = 0;
+  for (let i = 0; i < totalQuestions; i++) {
+    if (userAnswers[i] === questions[i].answer) totalScore += 2;
+  }
+
+  localStorage.setItem("totalQuestions", totalQuestions);
+  localStorage.setItem("attemptedQuestions", attemptedQuestions);
+  localStorage.setItem("unattemptedQuestions", totalQuestions - attemptedQuestions);
+  localStorage.setItem("totalScore", totalScore);
+
+  // ✅ Added this line
+  localStorage.setItem("scienceMark", totalScore);
+
+  // ✅ Changed this line
+  window.location.href = "tamil mark.html";
+}
+
+window.onload = () => loadQuestion(currentQuestion);
+</script>
+</body>
+</html>

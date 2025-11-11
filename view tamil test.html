@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tamil Test | Test Pro Academy</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100%;
+    background: #f3f6fb;
+  }
+  header {
+    background: #1c3b57;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .container {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
+  .summary {
+    width: 300px;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    margin: 20px;
+    flex-shrink: 0;
+  }
+  .summary h3 {margin-top:0;color:#1c3b57;font-size:1.2rem;}
+  .summary p {margin: 8px 0;font-size:1rem;}
+  .question-buttons {display: flex;flex-wrap: wrap;gap:5px;margin-top:10px;max-height:400px;overflow-y:auto;}
+  .question-buttons button {width: 40px;height: 40px;border-radius: 50%;border:none;cursor:pointer;background:#ccc;}
+  .question-buttons button.active {background:#1c3b57;color:white;}
+  .question-box {
+    flex: 1;
+    background: #fff;
+    margin: 40px 20px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .question-number {font-weight:bold;font-size:1.2rem;}
+  .question-text {margin: 25px 0;font-size:1.1rem;}
+  .options button {
+    display:block;width:100%;text-align:left;margin:10px 0;padding:14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;transition:0.3s;font-size:1rem;
+  }
+  .options button:hover {background:#e0e0e0;}
+  .nav-buttons {display:flex;justify-content:space-between;margin-top:30px;}
+  .nav-buttons button, .submit-btn {padding:12px 30px;border:none;background:#1c3b57;color:white;border-radius:6px;cursor:pointer;}
+  .nav-buttons button:hover, .submit-btn:hover {background:#16324a;}
+  .submit-btn {margin-top:20px;width:100%;}
+  @media(max-width:900px){
+    .container {flex-direction: column;}
+    .summary {width:90%;margin:10px auto;}
+    .question-box {margin:10px auto;width:90%;}
+  }
+</style>
+</head>
+<body>
+
+<header>Tamil Test - 20 Questions</header>
+
+<div class="container">
+  <div class="summary">
+    <h3>Test Summary</h3>
+    <p>Total Questions: <span id="total-questions">20</span></p>
+    <p>Completed: <span id="completed-questions">0</span></p>
+    <p>Pending: <span id="pending-questions">20</span></p>
+    <div class="question-buttons" id="question-buttons"></div>
+    <button class="submit-btn" onclick="submitTest()">Submit Test</button>
+  </div>
+
+  <div class="question-box">
+    <div>
+      <div class="question-number" id="question-number">Question 1 of 20</div>
+      <div class="question-text" id="question-text">Loading question...</div>
+      <div class="options">
+        <button onclick="selectOption(0)" id="option0">Option A</button>
+        <button onclick="selectOption(1)" id="option1">Option B</button>
+        <button onclick="selectOption(2)" id="option2">Option C</button>
+        <button onclick="selectOption(3)" id="option3">Option D</button>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {q:"“அன்னை மொழியே” என்ற கவிதையில் இடம்பெறும் மன்னன்", options:["சேரன்","சோழன்","பாண்டியன்","பல்லவன்"], answer:1},
+  {q:"“நற்கணக்கே” என்பதில் சுட்டப்படும் நூல்கள் எத்தனை?", options:["18","10","8","5"], answer:0},
+  {q:"காய்ந்த இலையும் காய்ந்த தொகையும் நிலத்துக்கு நல்ல உரங்கள். அடிக்கோடிட்ட பகுதி குறிப்பிடுவது?", options:["இலையும் சருகும்","தொகையும் சண்டும்","தாளும் ஓலையும்","சருகும் சண்டும்"], answer:0},
+  {q:"வேர்க்கடலை / மிளகாய் விதை / மாங்கொட்டை ஆகியவற்றைக் குறிக்கும் பயிர்வகை?", options:["குலை வகை","மணி வகை","ஒழுந்து வகை","இலை வகை"], answer:2},
+  {q:"மரஞ்செடியினின்று பூ கீழே விழுந்த நிலையைக் குறிக்கும் சொல்?", options:["அரும்பு","மலர்","வீ","செம்மல்"], answer:2},
+  {q:"மொழிஞாயிறு என்றழைக்கப்பட்டவர் யார்?", options:["க. அப்பாத்துரை","தேவநேயப் பாவாணர்","இளங்குமரனார்","ஜி. யு. போப்"], answer:1},
+  {q:"தமிழ்ச்சொல் வளம் என்னும் கட்டுரை இடம் பெற்றுள்ள நூல் எது?", options:["சொல்லாய்வுக் கட்டுரைகள்","தேவநேயம்","மொழி மரபு","ஆய்வியல் நெறிமுறைகள்"], answer:0},
+  {q:"ஒரு நாட்டு வளத்திற்குத் தக்கபடியே அந்நாட்டு மக்களுக்கு எது அமைந்திருக்கும்?", options:["அன்பொழுக்கம்","அறிவொழுக்கம்","களவொழுக்கம்","கற்பொழுக்கம்"], answer:1},
+  {q:"செந்தமிழ்ச் சொற்பிறப்பியல் அகரமுதலித் திட்ட இயக்குநராகப் பணியாற்றியவர் யார்?", options:["தேவநேயப் பாவாணர்","வெள்ளைவாரணார்","இளங்குமரனார்","பெருந்தேவனார்"], answer:2},
+  {q:"உலகத் தமிழ்க் கழகத்தை நிறுவித் தலைவராக இருந்தவர் யார்?", options:["தனிநாயகம் அழகள்","தேவநேயப் பாவாணர்","இளங்குமரனார்","மு. வரதராசனார்"], answer:1},
+  {q:"ஒற்றளபெடையில் அளபெடுக்கும் ஒற்றெழுத்துகளின் எண்ணிக்கை எத்தனை?", options:["11","12","13","15"], answer:1},
+  {q:"சொல் திரிந்து அளபெடுப்பது என்பது?", options:["செய்யுளிசை அளபெடை","இன்னிசை அளபெடை","சொல்லிசை அளபெடை","பா அளபெடை"], answer:2},
+  {q:"குறுக்கங்கள் எத்தனை வகைப்படும்?", options:["மூன்று","நான்கு","ஐந்து","இரண்டு"], answer:0},
+  {q:"மொழியின் சிறப்புகளை அறிய துணை செய்வது?", options:["கவிதை","இலக்கணம்","உரைநடை","பாடல்"], answer:1},
+  {q:"நெட்டெழுத்து அளபெடுப்பது என்பது?", options:["செய்யுளிசை அளபெடை","இன்னிசை அளபெடை","சொல்லிசை அளபெடை","தொகை அளபெடை"], answer:1},
+  {q:"எந்தமிழ்நா என்பதைப் பிரித்தால் எவ்வாறு வரும்?", options:["எந் + தமிழ் + நா","எந் + தமிழ் + நா","எம் + தமிழ் + நா","எந்த் + தமிழ் + நா"], answer:2},
+  {q:"உலகக் காற்று நாள் எது?", options:["ஜூன் 15","ஜூலை 15","ஜனவரி 15","டிசம்பர் 10"], answer:0},
+  {q:"இந்தியாவின் முதுகெலும்பு எது?", options:["நெசவு","வேளாண்மை","கட்டிடத்தொழில்","பேரளவு உற்பத்தி"], answer:1},
+  {q:"சிந்துக்குத் தந்தை என்று பாராட்டப்பட்டவர் யார்?", options:["பாரதியார்","பாரதிதாசன்","சுரதா","கவிமணி"], answer:1},
+  {q:"கேலிச் சித்திரம், கருத்துப்படம் போன்றவற்றை உருவாக்கியவர் யார்?", options:["பாரதியார்","பாரதிதாசன்","சுரதா","கவிமணி"], answer:2}
+];
+
+let currentQuestion=0;
+let userAnswers=new Array(questions.length).fill(null);
+
+function loadQuestion(index){
+  document.getElementById('question-number').innerText = `Question ${index+1} of ${questions.length}`;
+  document.getElementById('question-text').innerText = questions[index].q;
+  questions[index].options.forEach((opt,i)=>{
+    const btn=document.getElementById(`option${i}`);
+    btn.innerText=opt;
+    btn.style.background=userAnswers[index]===i?'#1c3b57':'#fff';
+    btn.style.color=userAnswers[index]===i?'#fff':'#000';
+  });
+  updateSummary();
+  updateQuickButtons();
+}
+
+function selectOption(option){
+  userAnswers[currentQuestion]=option;
+  loadQuestion(currentQuestion);
+}
+
+function nextQuestion(){if(currentQuestion<questions.length-1) currentQuestion++; loadQuestion(currentQuestion);}
+function prevQuestion(){if(currentQuestion>0) currentQuestion--; loadQuestion(currentQuestion);}
+
+function updateSummary(){
+  const completed=userAnswers.filter(a=>a!==null).length;
+  document.getElementById('completed-questions').innerText=completed;
+  document.getElementById('pending-questions').innerText=questions.length-completed;
+}
+
+function updateQuickButtons(){
+  const container=document.getElementById('question-buttons');
+  container.innerHTML='';
+  questions.forEach((q,i)=>{
+    let btn=document.createElement('button');
+    btn.innerText=i+1;
+    btn.className=i===currentQuestion?'active':'';
+    if(userAnswers[i]!==null) btn.style.background='#1c3b57';
+    btn.onclick=()=>{currentQuestion=i;loadQuestion(i);};
+    container.appendChild(btn);
+  });
+}
+
+function submitTest(){
+  // 🟢 Calculate marks and save to localStorage
+  let totalQuestions = questions.length;
+  let attemptedQuestions = userAnswers.filter(a => a !== null).length;
+  let totalScore = 0;
+
+  for (let i = 0; i < questions.length; i++) {
+    if (userAnswers[i] === questions[i].answer) {
+      totalScore += 2; // 2 marks for correct answer
+    }
+  }
+
+  localStorage.setItem('totalQuestions', totalQuestions);
+  localStorage.setItem('attemptedQuestions', attemptedQuestions);
+  localStorage.setItem('unattemptedQuestions', totalQuestions - attemptedQuestions);
+  localStorage.setItem('totalScore', totalScore);
+
+  // 🟢 NEW LINE: Save Tamil mark for grade page
+  localStorage.setItem('tamilMark', totalScore);
+
+  // Then go to result page
+  window.location.href = "tamil mark.html";
+}
+
+window.onload=()=> loadQuestion(currentQuestion);
+</script>
+</body>
+</html>

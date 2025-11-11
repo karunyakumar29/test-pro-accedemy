@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>English Test | Test Pro Academy</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100%;
+    background: #f3f6fb;
+  }
+  header {
+    background: #1c3b57;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .container {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
+  .summary {
+    width: 300px;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    margin: 20px;
+    flex-shrink: 0;
+  }
+  .summary h3 {margin-top:0;color:#1c3b57;font-size:1.2rem;}
+  .summary p {margin: 8px 0;font-size:1rem;}
+  .question-buttons {display: flex;flex-wrap: wrap;gap:5px;margin-top:10px;max-height:400px;overflow-y:auto;}
+  .question-buttons button {width: 40px;height: 40px;border-radius: 50%;border:none;cursor:pointer;background:#ccc;}
+  .question-buttons button.active {background:#1c3b57;color:white;}
+  .question-buttons button.answered {background:#1c3b57;color:white;}
+  .question-box {
+    flex: 1;
+    background: #fff;
+    margin: 40px 20px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .question-number {font-weight:bold;font-size:1.2rem;}
+  .question-text {margin: 25px 0;font-size:1.1rem;}
+  .options button {
+    display:block;width:100%;text-align:left;margin:10px 0;padding:14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;transition:0.15s;font-size:1rem;
+  }
+  .options button:hover {background:#e0e0e0;}
+  .options button.selected {
+    background:#1c3b57;
+    color:#fff;
+    border-color:#1c3b57;
+  }
+  .nav-buttons {display:flex;justify-content:space-between;margin-top:30px;}
+  .nav-buttons button, .submit-btn {padding:12px 30px;border:none;background:#1c3b57;color:white;border-radius:6px;cursor:pointer;}
+  .nav-buttons button:hover, .submit-btn:hover {background:#16324a;}
+  .submit-btn {margin-top:20px;width:100%;}
+  @media(max-width:900px){
+    .container {flex-direction: column;}
+    .summary {width:90%;margin:10px auto;}
+    .question-box {margin:10px auto;width:90%;}
+  }
+</style>
+</head>
+<body>
+
+<header>English Test - 20 Questions</header>
+
+<div class="container">
+  <div class="summary">
+    <h3>Test Summary</h3>
+    <p>Total Questions: <span id="total-questions">20</span></p>
+    <p>Completed: <span id="completed-questions">0</span></p>
+    <p>Pending: <span id="pending-questions">20</span></p>
+    <div class="question-buttons" id="question-buttons"></div>
+    <button class="submit-btn" onclick="submitTest()">Submit Test</button>
+  </div>
+
+  <div class="question-box">
+    <div>
+      <div class="question-number" id="question-number">Question 1 of 20</div>
+      <div class="question-text" id="question-text">Loading question...</div>
+      <div class="options">
+        <button onclick="selectOption(0)" id="option0">Option A</button>
+        <button onclick="selectOption(1)" id="option1">Option B</button>
+        <button onclick="selectOption(2)" id="option2">Option C</button>
+        <button onclick="selectOption(3)" id="option3">Option D</button>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { q: "It is a 55 foot sailing vessel built indigenously in India.", options: ["artificially", "beautifully", "naturally", "badly"], answer: 2 },
+  { q: "The young bird kept calling her mother plaintively.", options: ["sadly", "happily", "vainly", "joyfully"], answer: 0 },
+  { q: "No one visits me, he said in an unperturbed manner.", options: ["disturbed", "undisturbed", "confused", "undivided"], answer: 1 },
+  { q: "Scraping his beak now and again to whet it.", options: ["blunt", "harden", "brighten", "smoothen"], answer: 0 },
+  { q: "Nothing he said, gruffly, but he was, in colour, a light green.", options: ["unhappily", "happily", "sadly", "worriedly"], answer: 1 },
+  { q: "The disabled face challenges of access, acceptance and inclusion.", options: ["induction", "intuition", "exclusion", "extension"], answer: 2 },
+  { q: "Choose the correct plural form of 'radius'.", options: ["radio", "radii", "radious", "radie"], answer: 1 },
+  { q: "Form a derivative by adding the right prefix to the word 'nutrition'.", options: ["fall", "fell", "mal", "call"], answer: 2 },
+  { q: "Choose the correct expansion of the abbreviation 'HDMI'.", options: ["Hide Dimension Metro India", "High Dimension Media Institute", "High Definition Multimedia Interface", "High Definition Medieval India"], answer: 2 },
+  { q: "Priya felt happy to _______ the neighbours in the new locality of California.", options: ["get along with", "get on", "get away", "get together"], answer: 0 },
+  { q: "Choose the suitable option to pair it with the word 'traffic' to form a compound word.", options: ["bus", "car", "jam", "post"], answer: 2 },
+  { q: "Fill in the blank: I reached M. Hamel's garden, all out ____ breath.", options: ["on", "of", "by", "with"], answer: 1 },
+  { q: "I had such a shock when the dying man bolted the door and ______ it.", options: ["locked", "lock", "had locked", "have locked"], answer: 2 },
+  { q: "We are on our way to Kolkata ____ Chennai.", options: ["by", "from", "of", "with"], answer: 1 },
+  { q: "Synonym for 'indigenously'.", options: ["artificially", "beautifully", "naturally", "badly"], answer: 2 },
+  { q: "Antonym for 'whet'.", options: ["blunt", "harden", "brighten", "smoothen"], answer: 0 },
+  { q: "Antonym for 'gruffly'.", options: ["unhappily", "happily", "sadly", "worriedly"], answer: 1 },
+  { q: "Form a derivative for 'nutrition'.", options: ["malnutrition", "prenutrition", "unnutrition", "denutrition"], answer: 0 },
+  { q: "Plural form of 'radius'.", options: ["radios", "radii", "radiuses", "radious"], answer: 1 },
+  { q: "He was trembling ____ fear.", options: ["with", "of", "in", "by"], answer: 2 }
+];
+
+let currentQuestion = 0;
+let userAnswers = new Array(questions.length).fill(null);
+
+function loadQuestion(index) {
+  const q = questions[index];
+  document.getElementById("question-number").innerText = `Question ${index + 1} of ${questions.length}`;
+  document.getElementById("question-text").innerText = q.q;
+  q.options.forEach((opt, i) => {
+    const btn = document.getElementById(`option${i}`);
+    btn.innerText = opt;
+    btn.classList.toggle("selected", userAnswers[index] === i);
+  });
+  updateSummary();
+  updateQuickButtons();
+}
+
+function selectOption(i) {
+  userAnswers[currentQuestion] = i;
+  loadQuestion(currentQuestion);
+}
+
+function nextQuestion() {
+  if (currentQuestion < questions.length - 1) currentQuestion++;
+  loadQuestion(currentQuestion);
+}
+
+function prevQuestion() {
+  if (currentQuestion > 0) currentQuestion--;
+  loadQuestion(currentQuestion);
+}
+
+function updateSummary() {
+  const completed = userAnswers.filter(a => a !== null).length;
+  document.getElementById("completed-questions").innerText = completed;
+  document.getElementById("pending-questions").innerText = questions.length - completed;
+}
+
+function updateQuickButtons() {
+  const container = document.getElementById("question-buttons");
+  container.innerHTML = "";
+  questions.forEach((_, i) => {
+    const btn = document.createElement("button");
+    btn.innerText = i + 1;
+    if (i === currentQuestion) btn.classList.add("active");
+    if (userAnswers[i] !== null) btn.classList.add("answered");
+    btn.onclick = () => { currentQuestion = i; loadQuestion(i); };
+    container.appendChild(btn);
+  });
+}
+
+function submitTest() {
+  const totalQuestions = questions.length;
+  const attemptedQuestions = userAnswers.filter(a => a !== null).length;
+  let totalScore = 0;
+  for (let i = 0; i < totalQuestions; i++) {
+    if (userAnswers[i] === questions[i].answer) totalScore += 2;
+  }
+
+  // Save result in localStorage
+  localStorage.setItem("totalQuestions", totalQuestions);
+  localStorage.setItem("attemptedQuestions", attemptedQuestions);
+  localStorage.setItem("unattemptedQuestions", totalQuestions - attemptedQuestions);
+  localStorage.setItem("totalScore", totalScore);
+
+  // ✅ Added: Save English mark
+  localStorage.setItem("englishMark", totalScore);
+
+  // ✅ Changed: Redirect to English result page
+  window.location.href = "tamil mark.html";
+}
+
+window.onload = () => loadQuestion(currentQuestion);
+</script>
+</body>
+</html>
