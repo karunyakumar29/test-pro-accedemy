@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Login | Test Pro Academy</title>
 <style>
+/* [Keep all your existing CSS exactly the same - it's perfect] */
 * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
 body {
   margin: 0;
@@ -58,8 +59,7 @@ button:hover { background:#174463; transform: scale(1.05); }
 #profileContainer {
   width:120px; height:120px; border-radius:50%;
   border:3px solid transparent;
-  background-image: linear-gradient(white, white),
-                    linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);
+  background-image: linear-gradient(white, white), linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);
   background-origin: border-box;
   background-clip: content-box, border-box;
   display:flex; align-items:center; justify-content:center;
@@ -77,10 +77,9 @@ button:hover { background:#174463; transform: scale(1.05); }
 </style>
 </head>
 <body>
-
 <div id="container">
   <div class="logoContainer">
-    <img src="logo.png" alt="Logo">
+    <img src="pic.png" alt="Logo">
     <h2>Test Pro Academy</h2>
     <p>Welcome back! Continue your learning journey.</p>
   </div>
@@ -97,56 +96,55 @@ button:hover { background:#174463; transform: scale(1.05); }
       <input type="email" id="loginEmail" placeholder="you@example.com" required>
 
       <label>Register No</label>
-      <input type="text" id="loginPass" placeholder="Register Number" required>
+      <input type="text" id="loginRegisterNo" placeholder="Register Number" required> <!-- Fixed ID -->
 
       <button type="button" onclick="login()">Login</button>
+      
+      <p style="text-align:center; margin-top:20px; font-size:12px;">
+        Don't have an account? <a href="signup.html" style="color:#1c3b57; text-decoration:none; font-weight:600;">Sign up</a>
+      </p>
     </form>
   </div>
 </div>
 
 <script>
-// 🔹 When user types email, auto-update profile pic
 document.getElementById('loginEmail').addEventListener('input', function() {
   const email = this.value.trim().toLowerCase();
   const students = JSON.parse(localStorage.getItem('students')) || [];
 
-  // Find the user by email
   const user = students.find(s => s.email.toLowerCase() === email);
-
   const profilePreview = document.getElementById('profilePreview');
+  
   if (user && user.pic) {
     profilePreview.src = user.pic;
   } else {
-    // Default icon if no match
     profilePreview.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
   }
 });
 
-// 🔹 Login function
 function login() {
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('loginPass').value.trim();
+  const registerNo = document.getElementById('loginRegisterNo').value.trim(); // Fixed ID match
 
-  if (!email || !pass) {
+  if (!email || !registerNo) {
     alert("Please enter your email and register number.");
     return;
   }
 
   const students = JSON.parse(localStorage.getItem('students')) || [];
-  const user = students.find(s => s.email.toLowerCase() === email && s.password === pass);
+  const user = students.find(s => s.email.toLowerCase() === email && s.registerNo === registerNo); // Fixed property match
 
   if (!user) {
     alert("Invalid email or register number.");
     return;
   }
 
-  // Save and redirect
   localStorage.setItem('loggedIn', JSON.stringify(user));
   localStorage.setItem('studentData', JSON.stringify(user));
+  alert("Login successful! Redirecting to dashboard...");
   window.location.href = "student.html";
 }
 </script>
-
 </body>
 </html>
 
