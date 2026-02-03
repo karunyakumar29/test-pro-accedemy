@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Signup | Test Pro Academy</title>
+<style>
+/* [Keep all your existing CSS exactly the same - it's perfect] */
+*{box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif;}
+body{
+  margin:0;height:100vh;display:flex;align-items:center;justify-content:center;
+  background:#f3f6fb;overflow:hidden;
+}
+#container{
+  width:850px;background:#fff;border-radius:12px;overflow:hidden;
+  box-shadow:0 10px 40px rgba(0,0,0,0.15);display:flex;
+  animation:fadeInUp 1s ease;
+}
+.logoContainer{
+  flex:1;background:linear-gradient(135deg,#1c3b57,#2a527a);color:#fff;
+  padding:60px 40px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;animation:slideLeft 1s ease;
+}
+.logoContainer img{width:230px;margin-bottom:20px;animation:logoBounce 2s infinite ease-in-out;}
+.logoContainer h2{font-size:26px;margin-bottom:8px;}
+.formContainer{flex:1;position:relative;overflow:hidden;background:#fff;}
+.slide{
+  width:100%;height:100%;position:absolute;top:0;
+  left:100%;opacity:0;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px;
+  transition:all 0.7s ease;
+}
+.slide.active{left:0;opacity:1;}
+form{width:100%;max-width:320px;text-align:left;}
+label{font-weight:700;font-size:13px;color:#333;display:block;margin-bottom:6px;}
+input,select{
+  width:100%;padding:10px;border:1px solid #cbd3df;border-radius:6px;
+  background:#f3f6fb;font-size:14px;margin-bottom:14px;transition:0.3s ease;
+}
+input:focus,select:focus{outline:none;border-color:#1c3b57;background:#fff;transform:scale(1.03);}
+button{
+  width:100%;padding:12px 14px;border:none;border-radius:7px;background:#1c3b57;
+  color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:0.3s ease;
+}
+button:hover{background:#174463;transform:scale(1.05);}
+
+.profileRound{
+  width:120px;height:120px;border-radius:50%;border:3px solid transparent;
+  background-image:linear-gradient(white,white),linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);
+  background-origin:border-box;background-clip:content-box,border-box;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  cursor:pointer;margin:0 auto 15px auto;position:relative;
+  transition:transform 0.3s ease,box-shadow 0.3s ease;
+}
+.profileRound:hover{transform:scale(1.1);box-shadow:0 0 12px rgba(28,59,87,0.3);}
+.profileRound img{width:100%;height:100%;object-fit:cover;}
+.profileRound::after{
+  position:absolute;bottom:0;right:0;background:#1c3b57;color:#fff;width:22px;height:22px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;content:"+";
+}
+#profilePic{display:none;}
+
+@keyframes fadeInUp{0%{opacity:0;transform:translateY(50px);}100%{opacity:1;transform:translateY(0);}}
+@keyframes slideLeft{from{transform:translateX(-40px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes logoBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+</style>
+</head>
+<body>
+<div id="container">
+  <div class="logoContainer">
+    <img src="pic.png" alt="Logo">
+    <h2>Test Pro Academy</h2>
+    <p>Empowering learning through smart assessment and modern design.</p>
+  </div>
+
+  <div class="formContainer">
+    <!-- Step 1 -->
+    <div class="slide active" id="slide1">
+      <form>
+        <h2 style="text-align:center;color:#1c3b57;">Sign Up</h2>
+        <div class="profileRound" onclick="document.getElementById('profilePic').click();">
+          <img id="profilePreview" src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile Preview">
+        </div>
+        <input type="file" id="profilePic" accept="image/*">
+
+        <label>Email</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" required>
+        <label>Register No</label>
+        <input type="text" id="registerNo" placeholder="Register No" required> <!-- Fixed ID -->
+        <button type="button" onclick="nextSlide()">Next</button>
+      </form>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="slide" id="slide2">
+      <form>
+        <h2 style="text-align:center;color:#1c3b57;">Student Info</h2>
+        <label>Full Name</label>
+        <input type="text" id="studentName" placeholder="Your name" required>
+        <label>Medium</label>
+        <select id="medium" required>
+          <option value="">Select</option>
+          <option value="English">English</option>
+          <option value="Tamil">Tamil</option>
+        </select>
+        <button type="button" onclick="finishSignup()">Sign Up</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+let user = {};
+
+// Profile pic preview
+document.getElementById("profilePic").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById("profilePreview").src = ev.target.result;
+      user.pic = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+function nextSlide() {
+  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+  const registerNo = document.getElementById('registerNo').value.trim(); // Fixed ID match
+  if (!email || !registerNo) {
+    alert("Please fill in Email and Register No.");
+    return;
+  }
+  user.email = email;
+  user.registerNo = registerNo; // Fixed property name
+  document.getElementById('slide1').classList.remove('active');
+  document.getElementById('slide2').classList.add('active');
+}
+
+function finishSignup() {
+  const name = document.getElementById('studentName').value.trim();
+  const medium = document.getElementById('medium').value;
+  if (!name || !medium) {
+    alert("Please fill all fields.");
+    return;
+  }
+  user.name = name;
+  user.medium = medium;
+
+  // Check if user already exists
+  let students = JSON.parse(localStorage.getItem('students')) || [];
+  if (students.find(s => s.email === user.email || s.registerNo === user.registerNo)) {
+    alert("User with this email or register number already exists!");
+    return;
+  }
+
+  students.push(user);
+  localStorage.setItem('students', JSON.stringify(students));
+  localStorage.setItem('loggedIn', JSON.stringify(user));
+  localStorage.setItem('studentData', JSON.stringify(user));
+
+  alert("Signup complete! Redirecting to dashboard...");
+  window.location.href = "student.html"; // Redirect to login after signup
+}
+</script>
+</body>
+</html>
